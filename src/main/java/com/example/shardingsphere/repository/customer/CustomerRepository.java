@@ -14,5 +14,7 @@ public interface CustomerRepository extends BaseRepository<Customer, Long> {
 
   Customer findByClientIdAndId(Long clientId, Long customerId);
 
+  Customer getById(Long customerId);
+
   List<Customer> findAllByOrderByIdDesc();
 }

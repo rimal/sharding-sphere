@@ -38,5 +38,5 @@ public interface BaseRepository<T, ID extends Serializable> extends JpaRepositor
 */
   T findByHash(String value);
 
-  T getById(ID id);
+//  T getById(ID id);
 }

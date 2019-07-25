@@ -54,12 +54,12 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
     return t;
   }
 
-  @Override
+  /*@Override
   public T getById(ID id) {
     T t = super.findById(id).orElse(null);
 //    t = clientFilterCheck(t);
     return t;
-  }
+  }*/
 
   /*@Override
   public T findOne(ID id) {

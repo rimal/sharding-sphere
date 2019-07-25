@@ -1,8 +1,12 @@
 package com.example.shardingsphere.model.customer;
 
+import com.example.shardingsphere.constants.AppConstants;
 import com.example.shardingsphere.model.encryption.CryptoConverter;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -10,6 +14,15 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "customer")
+/*-- do not copy as a filter is to be defined once only in an app --*/
+@FilterDefs({
+    @FilterDef(name = AppConstants.CLIENT_FILTER, parameters = {@ParamDef(name = AppConstants.CLIENT_FILTER_CLIENT_ID_PARAM, type = "long")})
+})
+/*-- --*/
+
+@Filters({
+    @Filter(name = AppConstants.CLIENT_FILTER, condition = "client_id = :" + AppConstants.CLIENT_FILTER_CLIENT_ID_PARAM)
+})
 public class Customer {
 
   @Id

@@ -1,0 +1,19 @@
+<!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+
+
+  <!--<weaver options="-verbose -debug -showWeaveInfo-->
+  <!--<weaver options="-XmessageHandlerClass:org.springframework.aop.aspectj.AspectJWeaverMessageHandler">-->
+  <weaver>
+    <include within="com.example.shardingsphere..*"/>
+    <include within="org.hibernate..*"/>
+    <!-- Weave excludes start here -->
+
+    <!-- Weave excludes end here -->
+  </weaver>
+
+  <aspects>
+    <aspect name="com.example.shardingsphere.aop.advice.SessionFilterAdvice"/>
+  </aspects>
+
+</aspectj>

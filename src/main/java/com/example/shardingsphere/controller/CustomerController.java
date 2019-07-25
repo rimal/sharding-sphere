@@ -34,18 +34,23 @@ public class CustomerController {
     return new ResponseEntity<>(customer, HttpStatus.OK);
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<Customer> getCustomer(@PathVariable Long id) {
+    Customer customer = customerService.getCustomer(id);
+    return new ResponseEntity<>(customer, HttpStatus.OK);
+  }
+
   @GetMapping("/get-all")
   public ResponseEntity<List<Customer>> getAllCustomers() {
     List<Customer> customers = customerService.getAllCustomers();
     return new ResponseEntity<>(customers, HttpStatus.OK);
   }
 
-  @GetMapping("/create/{clientId}")
+  @GetMapping("/create")
   public ResponseEntity<Customer> createCustomer(
-      @PathVariable Long clientId,
       @RequestParam(value = "name") String name
   ) {
-    Customer customer = customerService.createCustomer(clientId, name);
+    Customer customer = customerService.createCustomer(name);
     return new ResponseEntity<>(customer, HttpStatus.OK);
   }
 }
