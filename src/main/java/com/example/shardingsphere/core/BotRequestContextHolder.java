@@ -50,7 +50,7 @@ public class BotRequestContextHolder {
 
   public static void setClientContext(ClientContext clientContext) {
     clientContextHolder.set(clientContext);
-    logger.info("Client context set to " + getClientHash());
+    logger.info("Client context set to " + getClientId());
 //    LogHelper.addVariableToLogContext(LogConstants.Variable.CLIENT_HASH, getClientHash());
   }
 
