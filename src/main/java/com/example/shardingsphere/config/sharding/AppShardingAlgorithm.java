@@ -1,5 +1,6 @@
 package com.example.shardingsphere.config.sharding;
 
+import com.example.shardingsphere.core.BotRequestContextHolder;
 import io.shardingsphere.api.algorithm.sharding.ListShardingValue;
 import io.shardingsphere.api.algorithm.sharding.ShardingValue;
 import io.shardingsphere.api.algorithm.sharding.complex.ComplexKeysShardingAlgorithm;
@@ -7,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Rimal
@@ -33,13 +35,20 @@ public class AppShardingAlgorithm implements ComplexKeysShardingAlgorithm {
       ListShardingValue<Long> clientIdShardingValue = (ListShardingValue<Long>) shardingValues.stream()
           .filter(shardingValue -> shardingValue.getColumnName().equalsIgnoreCase("client_id"))
           .findFirst().orElse(null);
+
+      List<Long> clientIdList = null;
+
       if (null != clientIdShardingValue) {
-        Long clientId = clientIdShardingValue.getValues().stream().findFirst().orElse(null);
-        if (null != clientId) {
-          if (null != CLIENT_TO_DS_NUMBER.get(clientId) && CLIENT_TO_DS_NUMBER.get(clientId).size() > 0) {
-            applicableTargetNames = Collections.singletonList("speedy-" + CLIENT_TO_DS_NUMBER.get(clientId).get(0));
-          }
-        }
+        clientIdList = new ArrayList<>(clientIdShardingValue.getValues());
+      } else if (null != BotRequestContextHolder.getClientId()) {
+        clientIdList = Collections.singletonList(BotRequestContextHolder.getClientId());
+      }
+
+      if (null != clientIdList && clientIdList.size() > 0) {
+        applicableTargetNames = clientIdList.stream()
+            .filter(clientId -> null != CLIENT_TO_DS_NUMBER.get(clientId) && CLIENT_TO_DS_NUMBER.get(clientId).size() > 0)
+            .flatMap(clientId -> CLIENT_TO_DS_NUMBER.get(clientId).stream().map(dsNumber -> "speedy-" + dsNumber))
+            .collect(Collectors.toList());
       }
     }
 
