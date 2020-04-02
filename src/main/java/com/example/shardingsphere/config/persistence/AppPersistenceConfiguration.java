@@ -3,10 +3,10 @@ package com.example.shardingsphere.config.persistence;
 import com.example.shardingsphere.config.properties.AppProperties;
 import com.example.shardingsphere.config.sharding.AppShardingAlgorithm;
 import com.zaxxer.hikari.HikariDataSource;
-import io.shardingsphere.api.config.rule.ShardingRuleConfiguration;
-import io.shardingsphere.api.config.rule.TableRuleConfiguration;
-import io.shardingsphere.api.config.strategy.ComplexShardingStrategyConfiguration;
-import io.shardingsphere.shardingjdbc.api.ShardingDataSourceFactory;
+import org.apache.shardingsphere.api.config.sharding.ShardingRuleConfiguration;
+import org.apache.shardingsphere.api.config.sharding.TableRuleConfiguration;
+import org.apache.shardingsphere.api.config.sharding.strategy.ComplexShardingStrategyConfiguration;
+import org.apache.shardingsphere.shardingjdbc.api.ShardingDataSourceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -45,18 +44,24 @@ public class AppPersistenceConfiguration {
     shardingRuleConfig.getTableRuleConfigs().add(getTableRuleConfiguration("customer"));
     shardingRuleConfig.getTableRuleConfigs().add(getTableRuleConfiguration("ticket"));
 
+    TableRuleConfiguration clientTableRuleConfig = getTableRuleConfiguration("client");
+    clientTableRuleConfig.setDatabaseShardingStrategyConfig(new ComplexShardingStrategyConfiguration("id", new AppShardingAlgorithm()));
+    shardingRuleConfig.getTableRuleConfigs().add(clientTableRuleConfig);
+
 //    shardingRuleConfig.getBindingTableGroups().add("t_order, t_order_item");
 
-    return ShardingDataSourceFactory.createDataSource(createDataSourceMap(), shardingRuleConfig, Collections.emptyMap(), new Properties() {{
+    return ShardingDataSourceFactory.createDataSource(createDataSourceMap(), shardingRuleConfig, new Properties() {{
       put("sql.show", true);
     }});
   }
 
   private TableRuleConfiguration getTableRuleConfiguration(String tableName) {
-    TableRuleConfiguration tableRuleConfiguration = new TableRuleConfiguration();
-    tableRuleConfiguration.setLogicTable(tableName);
-    tableRuleConfiguration.setActualDataNodes("speedy-$->{1..4}." + tableName);
-    tableRuleConfiguration.setKeyGeneratorColumnName("id");
+    TableRuleConfiguration tableRuleConfiguration = new TableRuleConfiguration(tableName, "speedy-$->{1..4}." + tableName);
+    //tableRuleConfiguration.setLogicTable(tableName);
+    //tableRuleConfiguration.setActualDataNodes("speedy-$->{1..4}." + tableName);
+
+
+    //tableRuleConfiguration.setKeyGeneratorColumnName("id");
 
     return tableRuleConfiguration;
   }

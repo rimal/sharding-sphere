@@ -3,9 +3,9 @@ package com.example.shardingsphere.aop.advice;
 import com.example.shardingsphere.constants.AppConstants;
 import com.example.shardingsphere.core.BotRequestContextHolder;
 import com.example.shardingsphere.core.ClientContext;
-import io.shardingsphere.api.algorithm.sharding.ListShardingValue;
-import io.shardingsphere.api.algorithm.sharding.ShardingValue;
-import io.shardingsphere.core.rule.TableRule;
+import org.apache.shardingsphere.core.rule.TableRule;
+import org.apache.shardingsphere.core.strategy.route.value.ListRouteValue;
+import org.apache.shardingsphere.core.strategy.route.value.RouteValue;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
@@ -52,11 +52,11 @@ public class SessionFilterAdvice {
   @Around(value = "com.example.shardingsphere.aop.AopSystemArchitecture.routingDatasources(tableRule,databaseShardingValues)",
       argNames = "tableRule,databaseShardingValues")
   @SuppressWarnings("unchecked")
-  public Collection<String> routingFilter(ProceedingJoinPoint joinPoint, final TableRule tableRule, List<ShardingValue> databaseShardingValues) throws Throwable {
+  public Collection<String> routingFilter(ProceedingJoinPoint joinPoint, final TableRule tableRule, List<RouteValue> databaseShardingValues) throws Throwable {
     if (databaseShardingValues.isEmpty()) {
       logger.info("empty");
 
-      ListShardingValue listShardingValue = new ListShardingValue("", "", null);
+      ListRouteValue listShardingValue = new ListRouteValue("", "", null);
       databaseShardingValues = Collections.singletonList(listShardingValue);
     }
 

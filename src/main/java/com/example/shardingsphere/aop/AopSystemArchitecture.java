@@ -1,7 +1,7 @@
 package com.example.shardingsphere.aop;
 
-import io.shardingsphere.api.algorithm.sharding.ShardingValue;
-import io.shardingsphere.core.rule.TableRule;
+import org.apache.shardingsphere.core.rule.TableRule;
+import org.apache.shardingsphere.core.strategy.route.value.RouteValue;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
@@ -19,8 +19,9 @@ public class AopSystemArchitecture {
   public void gettingSession() {
   }
 
-  @Pointcut("execution(* io.shardingsphere.core.routing.type.standard.StandardRoutingEngine.routeDataSources(..)) && args(tableRule, databaseShardingValues)")
-  public void routingDatasources(final TableRule tableRule, final List<ShardingValue> databaseShardingValues) {
+  @Pointcut(value = "execution(* org.apache.shardingsphere.core.route.type.standard.StandardRoutingEngine.routeDataSources(..)) && args(tableRule, databaseShardingValues)",
+      argNames = "tableRule,databaseShardingValues")
+  public void routingDatasources(final TableRule tableRule, final List<RouteValue> databaseShardingValues) {
 
   }
 

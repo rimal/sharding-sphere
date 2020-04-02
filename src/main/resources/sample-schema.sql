@@ -38,3 +38,23 @@ CREATE TABLE IF NOT EXISTS `client` (
   `update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `ticket`
+add column  `conversation_hash` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+add column  `ticket_hash` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+add column  `ext_ticket_id` varchar(120) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+add column  `crm_ticket_id` varchar(120) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+add column  `crm_ticket_channel_id` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+add column  `channel` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+add column  `prev_ticket_id` bigint(20) unsigned DEFAULT NULL,
+add column  `assigned_user_id` bigint(20) unsigned DEFAULT NULL,
+add column  `inferred_item` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+add column  `bot_version_id` bigint(20) unsigned DEFAULT NULL,
+add column  `node_group_id` bigint(20) unsigned DEFAULT NULL,
+add column  `extra_info` mediumtext COLLATE utf8mb4_unicode_ci,
+add column  `rating` decimal(3,1) DEFAULT NULL,
+add column  `feedback` mediumtext COLLATE utf8mb4_unicode_ci,
+add column  `comments` mediumtext COLLATE utf8mb4_unicode_ci,
+add column  `offline_log_id` bigint(20) unsigned DEFAULT NULL,
+add column  `landing_url` text COLLATE utf8mb4_unicode_ci,
+add column  `traffic_tracking_id` bigint(20) unsigned DEFAULT NULL;

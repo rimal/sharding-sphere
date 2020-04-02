@@ -23,6 +23,7 @@ import java.util.Date;
 @Filters({
     @Filter(name = AppConstants.CLIENT_FILTER, condition = "client_id = :" + AppConstants.CLIENT_FILTER_CLIENT_ID_PARAM)
 })
+//@DynamicUpdate
 public class Customer {
 
   @Id

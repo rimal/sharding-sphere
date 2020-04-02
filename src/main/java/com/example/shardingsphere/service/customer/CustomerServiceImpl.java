@@ -34,6 +34,16 @@ public class CustomerServiceImpl {
     return customer;
   }
 
+  @Transactional
+  public Customer updateCustomer(Long customerId, String name) {
+    Customer customer = getCustomer(customerId);
+    //customer.setClientId(BotRequestContextHolder.getClientId());
+    customer.setName(name);
+
+    customerRepository.update(customer);
+    return customer;
+  }
+
   public Customer getCustomer(Long customerId) {
     return customerRepository.getById(customerId);
   }

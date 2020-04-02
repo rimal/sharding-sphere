@@ -7,7 +7,7 @@
   <weaver>
     <include within="com.example.shardingsphere..*"/>
     <include within="org.hibernate..*"/>
-    <include within="io.shardingsphere..*"/>
+    <include within="org.apache.shardingsphere..*"/>
     <!-- Weave excludes start here -->
 
     <!-- Weave excludes end here -->

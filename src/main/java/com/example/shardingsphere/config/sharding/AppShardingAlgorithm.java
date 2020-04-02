@@ -1,9 +1,8 @@
 package com.example.shardingsphere.config.sharding;
 
 import com.example.shardingsphere.core.BotRequestContextHolder;
-import io.shardingsphere.api.algorithm.sharding.ListShardingValue;
-import io.shardingsphere.api.algorithm.sharding.ShardingValue;
-import io.shardingsphere.api.algorithm.sharding.complex.ComplexKeysShardingAlgorithm;
+import org.apache.shardingsphere.api.sharding.complex.ComplexKeysShardingAlgorithm;
+import org.apache.shardingsphere.api.sharding.complex.ComplexKeysShardingValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * @author Rimal
  */
-public class AppShardingAlgorithm implements ComplexKeysShardingAlgorithm {
+public class AppShardingAlgorithm implements ComplexKeysShardingAlgorithm<Long> {
 
   private static final Logger logger = LoggerFactory.getLogger(AppShardingAlgorithm.class);
 
@@ -27,6 +26,35 @@ public class AppShardingAlgorithm implements ComplexKeysShardingAlgorithm {
   }};
 
   @Override
+  public Collection<String> doSharding(Collection<String> availableTargetNames, ComplexKeysShardingValue<Long> shardingValue) {
+    List<String> applicableTargetNames = null;
+
+    List<Long> clientIdList = new ArrayList<>();
+
+    if (shardingValue.getColumnNameAndShardingValuesMap().containsKey("client_id")) {
+      clientIdList = new ArrayList<>(shardingValue.getColumnNameAndShardingValuesMap().get("client_id"));
+    }
+
+    if (clientIdList.isEmpty()) {
+      clientIdList = Collections.singletonList(BotRequestContextHolder.getClientId());
+    }
+
+    if (null != clientIdList && clientIdList.size() > 0) {
+      applicableTargetNames = clientIdList.stream()
+          .filter(clientId -> null != CLIENT_TO_DS_NUMBER.get(clientId) && CLIENT_TO_DS_NUMBER.get(clientId).size() > 0)
+          .flatMap(clientId -> CLIENT_TO_DS_NUMBER.get(clientId).stream().map(dsNumber -> "speedy-" + dsNumber))
+          .collect(Collectors.toList());
+    }
+
+    if (null == applicableTargetNames) {
+      applicableTargetNames = new ArrayList<>(availableTargetNames);
+      logger.error("Could not find applicable shard. Executing query on all shards");
+    }
+
+    return applicableTargetNames;
+  }
+
+  /*@Override
   @SuppressWarnings("unchecked")
   public Collection<String> doSharding(Collection<String> availableTargetNames, Collection<ShardingValue> shardingValues) {
     List<String> applicableTargetNames = null;
@@ -58,5 +86,5 @@ public class AppShardingAlgorithm implements ComplexKeysShardingAlgorithm {
     }
 
     return applicableTargetNames;
-  }
+  }*/
 }
